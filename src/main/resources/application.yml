@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: air-monitor-platform-demo
+server:
+  port: 6060
+
+
