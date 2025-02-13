@@ -2,6 +2,8 @@ package com.uluckyxh.airmonitorplatform.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -28,12 +30,14 @@ public class AirQualityMonitoring {
     /**
      * 设备唯一编号(MN号)
      */
+    @NotBlank(message = "设备MN号不能为空")
     private String mn;
 
     /**
      * 监测时间,格式:yyyy-MM-dd HH:mm:ss
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @NotNull(message = "监测时间不能为空")
     private LocalDateTime monitorTime;
 
     /**

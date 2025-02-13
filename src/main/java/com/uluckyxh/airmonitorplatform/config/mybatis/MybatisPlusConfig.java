@@ -29,27 +29,41 @@ public class MybatisPlusConfig {
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
 
-        // 配置动态表名拦截器（分表功能）
+        // 创建动态表名插件实例
         DynamicTableNameInnerInterceptor dynamicTableNameInnerInterceptor = new DynamicTableNameInnerInterceptor();
-        // 设置表名处理器，只对 air_quality_monitoring 表进行分表处理
+
+        // 设置动态表名处理器
         dynamicTableNameInnerInterceptor.setTableNameHandler((sql, tableName) -> {
-            // 只有空气质量监测表需要分表
-            if (SHARDING_TABLE_NAME.equals(tableName)) {
-                // 获取当前时间并格式化为yyyyMM格式作为表名后缀
-                String suffix = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMM"));
-                // 返回分表后的表名
-                return tableName + "_" + suffix;
+            // 只处理空气质量监测表
+            if (!SHARDING_TABLE_NAME.equals(tableName)) {
+                return tableName;
             }
-            // 其他表返回原表名
+
+            // 获取参数方法
+            Map<String, Object> paramMap = RequestDataHelper.getRequestData();
+            if (paramMap != null) {
+                // 打印参数便于调试
+//                paramMap.forEach((k, v) -> System.err.println(k + "----" + v));
+
+                // 获取监测时间参数
+                LocalDateTime monitorTime = (LocalDateTime) paramMap.get("monitor_time");
+                if (monitorTime != null) {
+                    // 返回带月份后缀的表名
+                    return tableName + "_" + monitorTime.format(DateTimeFormatter.ofPattern("yyyyMM"));
+                }
+            }
+
             return tableName;
         });
+
+        // 将动态表名插件添加到插件链中
         interceptor.addInnerInterceptor(dynamicTableNameInnerInterceptor);
 
         // 配置分页插件
         PaginationInnerInterceptor paginationInterceptor = new PaginationInnerInterceptor(DbType.MYSQL);
-        paginationInterceptor.setMaxLimit(500L);
-        paginationInterceptor.setOverflow(false);
-        interceptor.addInnerInterceptor(paginationInterceptor);
+        paginationInterceptor.setMaxLimit(500L); // 设置最大分页限制
+        paginationInterceptor.setOverflow(false); // 设置超出最大分页限制时是否返回全部数据
+        interceptor.addInnerInterceptor(paginationInterceptor); // 添加分页插件
 
         // 配置防全表更新与删除插件
         interceptor.addInnerInterceptor(new BlockAttackInnerInterceptor());
