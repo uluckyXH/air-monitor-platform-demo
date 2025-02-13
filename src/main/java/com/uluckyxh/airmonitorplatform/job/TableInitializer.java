@@ -43,7 +43,7 @@ public class TableInitializer {
         create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         PRIMARY KEY (id),
-        UNIQUE KEY uk_mn_monitor_time (mn, monitor_time) COMMENT '设备号和监测时间的唯一索引',
+        UNIQUE KEY uk_mn_monitor_time (monitor_time, mn) COMMENT '设备号和监测时间的唯一索引',
         KEY idx_monitor_time (monitor_time) COMMENT '监测时间索引'
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='空气质量监测数据表';
     """;

@@ -15,9 +15,9 @@ public interface AirQualityMonitoringMapper extends BaseMapper<AirQualityMonitor
      * 查询指定月份表的数据
      */
     @Select("SELECT mn,monitor_time,pm25,pm10,co,no2,so2,o3 FROM ${tableName} " +
-            "WHERE mn = #{mn} " +
-            "AND monitor_time >= #{startTime} " +
+            "WHERE monitor_time >= #{startTime} " +
             "AND monitor_time <= #{endTime} " +
+            "AND mn = #{mn}  " +
             "ORDER BY monitor_time ASC")
     List<AirQualityMonitoringBriefVo> selectByTableAndTimeRange(
             @Param("tableName") String tableName,
