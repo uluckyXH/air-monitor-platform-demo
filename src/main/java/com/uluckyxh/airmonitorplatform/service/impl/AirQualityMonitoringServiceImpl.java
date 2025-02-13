@@ -1,16 +1,14 @@
 package com.uluckyxh.airmonitorplatform.service.impl;
 
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.uluckyxh.airmonitorplatform.config.excepition.AirQualityMonitoringException;
-import com.uluckyxh.airmonitorplatform.config.mybatis.RequestDataHelper;
+import com.uluckyxh.airmonitorplatform.utils.RequestDataHelper;
 import com.uluckyxh.airmonitorplatform.entity.AirQualityMonitoring;
 import com.uluckyxh.airmonitorplatform.mapper.AirQualityMonitoringMapper;
 import com.uluckyxh.airmonitorplatform.service.AirQualityMonitoringService;
+import com.uluckyxh.airmonitorplatform.vo.AirQualityMonitoringBriefVo;
 import com.uluckyxh.airmonitorplatform.vo.MonthQueryInfo;
-import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -50,15 +48,15 @@ public class AirQualityMonitoringServiceImpl extends ServiceImpl<AirQualityMonit
      * @param endTime   结束时间 例如：2025-03-13 05:27:05
      * @return 监测数据列表
      */
-    public List<AirQualityMonitoring> queryForChart(String mn, LocalDateTime startTime, LocalDateTime endTime) {
+    public List<AirQualityMonitoringBriefVo> queryForChart(String mn, LocalDateTime startTime, LocalDateTime endTime) {
         // 1. 获取查询涉及的所有月份及其对应的时间范围
         List<MonthQueryInfo> monthQueries = calculateMonthlyQueries(startTime, endTime);
 
         // 2. 按月查询并合并结果
-        List<AirQualityMonitoring> result = new ArrayList<>();
+        List<AirQualityMonitoringBriefVo> result = new ArrayList<>();
         for (MonthQueryInfo monthQuery : monthQueries) {
             // 查询单个月份的数据
-            List<AirQualityMonitoring> monthData = airQualityMonitoringMapper.selectByTableAndTimeRange(
+            List<AirQualityMonitoringBriefVo> monthData = airQualityMonitoringMapper.selectByTableAndTimeRange(
                     monthQuery.getTableName(),
                     mn,
                     monthQuery.getStartTime(),

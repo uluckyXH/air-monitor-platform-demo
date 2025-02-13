@@ -3,6 +3,7 @@ package com.uluckyxh.airmonitorplatform.controller;
 import com.uluckyxh.airmonitorplatform.common.Result;
 import com.uluckyxh.airmonitorplatform.entity.AirQualityMonitoring;
 import com.uluckyxh.airmonitorplatform.service.AirQualityMonitoringService;
+import com.uluckyxh.airmonitorplatform.vo.AirQualityMonitoringBriefVo;
 import com.uluckyxh.airmonitorplatform.vo.ChartQueryVO;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -24,12 +25,12 @@ public class AirQualityMonitoringController {
      * 查询设备监测数据用于图表展示
      */
     @GetMapping("/data")
-    public Result<List<AirQualityMonitoring>> queryChartData(@Valid ChartQueryVO query) {
+    public Result<List<AirQualityMonitoringBriefVo>> queryChartData(@Valid ChartQueryVO query) {
         try {
             log.info("查询图表数据 - 设备: {}, 时间范围: {} 到 {}",
                     query.getMn(), query.getStartTime(), query.getEndTime());
 
-            List<AirQualityMonitoring> data = airQualityMonitoringService.queryForChart(
+            List<AirQualityMonitoringBriefVo> data = airQualityMonitoringService.queryForChart(
                     query.getMn(), query.getStartTime(), query.getEndTime());
 
             return Result.success(data);

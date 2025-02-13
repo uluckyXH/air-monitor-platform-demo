@@ -1,4 +1,4 @@
-package com.uluckyxh.airmonitorplatform.config.mybatis;
+package com.uluckyxh.airmonitorplatform.utils;
 
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 
@@ -9,6 +9,7 @@ import java.util.Map;
  * 用于动态表名分表场景下的参数传递
  */
 public class RequestDataHelper {
+
     /**
      * 请求参数存取，使用ThreadLocal确保线程安全
      */
