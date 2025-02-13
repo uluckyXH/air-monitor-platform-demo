@@ -1,7 +1,119 @@
-spring:
-  application:
-    name: air-monitor-platform-demo
 server:
   port: 6060
 
 
+spring:
+  application:
+    name: air-monitor-platform-demo
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: UTC
+  # 数据源配置
+  datasource:
+    # 数据库驱动名称
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # 数据库连接URL（包含编码格式、时区、SSL设置等）
+    url: jdbc:mysql://127.0.0.1:3306/air_monitor_db?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC&useSSL=false
+    # 数据库用户名
+    username: x
+    # 数据库密码
+    password: x
+    # 指定使用Druid连接池
+    type: com.alibaba.druid.pool.DruidDataSource
+
+    # Druid连接池配置
+    druid:
+      # 初始连接数：应用启动时连接池创建的初始化连接数量
+      # 建议：根据应用的并发量来设置，小型应用建议设置为5-10
+      initial-size: 5
+
+      # 最小连接池数量：连接池中保持的最小连接数
+      # 建议：与initial-size相同，以避免空闲时频繁创建销毁连接
+      min-idle: 5
+
+      # 最大连接池数量：连接池支持的最大连接数
+      # 建议：根据公式：CPU核心数 * 2 + 有效磁盘数 * 2
+      # 如：4核CPU、1个硬盘，建议值：4*2+1*2=10
+      max-active: 20
+
+      # 获取连接等待超时时间：当连接池达到最大连接数，新请求等待可用连接的最长时间
+      # 单位：毫秒。建议：根据业务接口的平均响应时间来设置
+      max-wait: 60000
+
+      # 检测连接是否有效的间隔时间：默认1分钟
+      # 单位：毫秒。周期性检测连接是否可用，防止连接池中维持无效连接
+      time-between-eviction-runs-millis: 60000
+
+      # 一个连接在池中最小生存的时间：空闲连接存活的最短时间
+      # 单位：毫秒。建议：设置为5分钟以上
+      min-evictable-idle-time-millis: 300000
+
+      # 测试连接是否可用的SQL语句：越简单越好
+      # MySQL推荐：SELECT 1
+      # Oracle推荐：SELECT 1 FROM DUAL
+      validation-query: SELECT 1
+
+      # 申请连接时是否检测连接有效性：空闲时间超过timeBetweenEvictionRunsMillis时检测
+      # 建议：开启，虽然会影响性能，但可以保证连接的可用性
+      test-while-idle: true
+
+      # 申请连接时是否执行validationQuery：每次获取连接时都检测其可用性
+      # 建议：关闭，否则会影响性能
+      test-on-borrow: false
+
+      # 归还连接时是否执行validationQuery：每次归还连接时都检测其可用性
+      # 建议：关闭，否则会影响性能
+      test-on-return: false
+
+      # 是否缓存preparedStatement：开启PSCache
+      # 建议：MySQL下建议关闭，Oracle下建议开启
+      pool-prepared-statements: false
+
+      # 每个连接上PSCache的大小：预编译SQL语句的缓存数量
+      # 建议：Oracle建议设置为20-50
+      max-pool-prepared-statement-per-connection-size: 20
+
+      # 监控配置部分
+      stat-view-servlet:
+        # 是否启用监控页面：生产环境建议开启，便于监控
+        enabled: false
+        # 监控页面的访问账号：访问监控页面时的用户名
+        # 建议：生产环境设置复杂的用户名
+        login-username: admin
+        # 监控页面的访问密码：访问监控页面时的密码
+        # 建议：生产环境设置复杂的密码
+        login-password: admin
+        # 是否允许重置监控数据：重置所有统计数据
+        # 建议：生产环境关闭，避免误操作
+        reset-enable: false
+        # 访问白名单：允许访问的IP列表，多个IP用逗号分隔
+        # 为空则允许所有访问，建议生产环境设置
+        allow:
+        # 访问黑名单：禁止访问的IP列表，多个IP用逗号分隔
+        # 优先级高于allow，建议生产环境设置
+        deny:
+
+      # 监控统计拦截器配置
+      filters: stat,wall
+      # stat：统计功能，记录SQL执行时间、次数等信息
+      # wall：防火墙功能，防止SQL注入等安全问题
+
+# MyBatis Plus配置
+mybatis-plus:
+  # 映射文件位置
+  mapper-locations: classpath*:/mapper/**/*.xml
+  # 实体类包路径
+  type-aliases-package: com.uluckyxh.airmonitorplatform.entity
+  configuration:
+    # 驼峰命名转换
+    map-underscore-to-camel-case: true
+    # 打印SQL日志
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      # 主键类型（ASSIGN_ID为雪花算法）
+      id-type: ASSIGN_ID
+      # 逻辑删除配置
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
