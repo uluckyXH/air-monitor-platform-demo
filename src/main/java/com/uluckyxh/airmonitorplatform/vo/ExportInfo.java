@@ -5,16 +5,14 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-/**
- * 月份查询信息
- */
 @Data
 @AllArgsConstructor
-public class MonthQueryInfo {
+public class ExportInfo {
+
     /**
-     * 表名
+     * mn
      */
-    private String tableName;
+    private String mn;
 
     /**
      * 该月份查询的开始时间
@@ -25,5 +23,10 @@ public class MonthQueryInfo {
      * 该月份查询的结束时间
      */
     private LocalDateTime endTime;
+
+    /**
+     * 数据条数
+     */
+    private Integer dataCount;
 
 }

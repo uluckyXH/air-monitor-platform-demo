@@ -32,4 +32,27 @@ public interface AirQualityMonitoringMapper extends BaseMapper<AirQualityMonitor
                                               @Param("mn") String mn,
                                               @Param("monitorTime") LocalDateTime monitorTime);
 
+    @Select("SELECT COUNT(id) FROM ${tableName} " +
+            "WHERE monitor_time >= #{startTime} " +
+            "AND monitor_time <= #{endTime} " +
+            "AND mn = #{mn}")
+    int selectCountByTableAndTimeRange(
+            @Param("tableName") String tableName,
+            @Param("mn") String mn,
+            @Param("startTime") LocalDateTime startTime,
+            @Param("endTime") LocalDateTime endTime);
+
+    @Select("SELECT mn,monitor_time,pm25,pm10,co,no2,so2,o3 FROM ${tableName} " +
+            "WHERE monitor_time >= #{startTime} " +
+            "AND monitor_time <= #{endTime} " +
+            "AND mn = #{mn}  " +
+            "ORDER BY monitor_time ASC " +
+            "LIMIT #{startRow},#{pageSize}")
+    List<AirQualityMonitoringBriefVo> selectByTableAndTimeRangeWithPage(
+            @Param("tableName") String tableName,
+            @Param("mn") String mn,
+            @Param("startTime") LocalDateTime startTime,
+            @Param("endTime") LocalDateTime endTime,
+            @Param("startRow") int startRow,
+            @Param("pageSize") int pageSize);
 }
